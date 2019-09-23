@@ -10,44 +10,66 @@ module.exports =async function(req, res){
     let numPages;
     const skip = page > 0? ((page-1) * numPerPage):0;
     const limit = skip + ',' + numPerPage;
+    const catid = req.query.catid;
 
     let results =[];
+  
     const queryAsync  = Promise.promisify(con.query.bind(con))
 
-    const count = await queryAsync("SELECT count(*) as numRows FROM mt_vi_page_products")
-    numRows = count[0].numRows;
-    numPages = Math.ceil(numRows/numPerPage);
-
-    const catalog = await  queryAsync("SELECT * FROM mt_vi_page_catalogs");
-    const data = await  queryAsync(`SELECT * FROM mt_vi_page_products ORDER BY ID DESC LIMIT ${limit} `)
-
-    data.forEach(product => {
-        catalog.forEach(cat => {
-            if(product.catid === cat.catid){
-                delete product.catid;
-                results.push({...product, catalog: cat})
+    // const catalog = await  queryAsync("SELECT * FROM mt_vi_page_catalogs");
+    if(catid){
+        const count = await queryAsync(`SELECT count(*) as numRows FROM mt_vi_page_products Where catid = ${catid}`)
+        numRows = count[0].numRows;
+        numPages = Math.ceil(numRows/numPerPage);
+        const data = await  queryAsync(`SELECT * FROM mt_vi_page_products Where catid = ${catid} ORDER BY ID DESC LIMIT ${limit} `)
+       let responsePayloadWhere = {results: data}
+        if(page < numPages){
+            responsePayloadWhere.pagination = {
+                totalNumberOfResults: numRows,
+                current: page,
+                perPage: numPerPage,
+                pervious: page > 0? page -1: undefined,
+                next: page < numPages -1 ?page+1:undefined
             }
-        })
-    })
-    let responsePayload = {
-        results: results
-    };
-    if(page < numPages){
-        responsePayload.pagination = {
-            totalNumberOfResults: numRows,
-            current: page,
-            perPage: numPerPage,
-            pervious: page > 0? page -1: undefined,
-            next: page < numPages -1 ?page+1:undefined
         }
+        else{
+            responsePayloadWhere.pagination = {
+             err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
+            }
+        }
+    
+        res.success(responsePayloadWhere)
     }
     else{
-        responsePayload.pagination = {
-         err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
-        }
-    }
+        const count = await queryAsync("SELECT count(*) as numRows FROM mt_vi_page_products")
+        numRows = count[0].numRows;
+        numPages = Math.ceil(numRows/numPerPage);
+        const data = await  queryAsync(`SELECT * FROM mt_vi_page_products ORDER BY ID DESC LIMIT ${limit} `)
 
-    res.success(responsePayload)
+        let responsePayload = {
+            results: data
+        };
+
+        if(page < numPages){
+            responsePayload.pagination = {
+                totalNumberOfResults: numRows,
+                current: page,
+                perPage: numPerPage,
+                pervious: page > 0? page -1: undefined,
+                next: page < numPages -1 ?page+1:undefined
+            }
+        }
+        else{
+            responsePayload.pagination = {
+             err: 'queried page ' + page + ' is >= to maximum page number ' + numPages
+            }
+        }
+    
+        res.success(responsePayload)
+
+    }
+    
+   
  } catch (error) {
      res.serverError(error)
  }
