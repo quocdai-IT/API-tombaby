@@ -1,0 +1,5 @@
+module.exports = function(app){
+    app.use('/', require('./home'))
+    app.use('/api/products', require('./product'))
+    app.use('/api/catalogs', require('./catalog'))
+}
