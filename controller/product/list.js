@@ -21,12 +21,12 @@ module.exports = async function(req, res) {
     const Promise = require("bluebird");
     let numRows;
     let queryPagination;
-    const numPerPage = parseInt(req.query.numPerPage) || 100;
-    const page = parseInt(req.query.page) || 1;
+    const numPerPage = parseInt(req.body.numPerPage) || 100;
+    const page = parseInt(req.body.page) || 1;
     let numPages;
     const skip = page > 0 ? (page - 1) * numPerPage : 0;
     const limit = skip + "," + numPerPage;
-    const catid = req.query.catid;
+    const catid = req.body.catid;
     const queryAsync = Promise.promisify(con.query.bind(con));
     let where = "WHERE 1";
     if (catid) {
