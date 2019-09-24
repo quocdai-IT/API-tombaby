@@ -4,9 +4,9 @@ module.exports = function(req, res){
 
     const queryAsync  = Promise.promisify(con.query.bind(con))
 
-    queryAsync("SELECT * FROM mt_vi_page_catalogs").then(results => {
+    queryAsync("SELECT * FROM mt_bienngonngu_page_catalogs").then(results => {
        return res.success(results)
     }).catch(err => {
-       return res.json({error: err})
+       return res.serverError( err)
     })
 }

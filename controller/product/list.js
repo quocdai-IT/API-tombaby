@@ -35,12 +35,12 @@ module.exports = async function(req, res) {
     console.log(where);
 
     const count = await queryAsync(
-      `SELECT count(*) as numRows FROM mt_vi_page_products ${where}`
+      `SELECT count(DISTINCT(same_group)) as numRows FROM mt_bienngonngu_page_products ${where}`
     );
     numRows = count[0].numRows;
     numPages = Math.ceil(numRows / numPerPage);
     const data = await queryAsync(
-      `SELECT * FROM mt_vi_page_products ${where} ORDER BY ID DESC LIMIT ${limit} `
+      `SELECT * FROM mt_bienngonngu_page_products ${where} GROUP BY same_group ORDER BY ID DESC LIMIT ${limit} `
     );
 
     let responsePayload = {
