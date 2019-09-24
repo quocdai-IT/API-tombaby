@@ -31,7 +31,7 @@ app.all('*', function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   console.error(err.stack);
-  res.status(500).send('Something broke!');
+  res.status(500).send({error: err});
 });
 
 con.connect(function(err) {
