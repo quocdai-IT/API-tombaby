@@ -1,5 +1,5 @@
 function panigation(page, numPages, numRows, numPerPage, response) {
-  if (page < numPages) {
+  if (page <= numPages) {
     response.pagination = {
       totalNumberOfResults: numRows,
       current: page,
