@@ -28,12 +28,16 @@ module.exports = async function(req, res) {
     const skip = page > 0 ? (page - 1) * numPerPage : 0;
     const limit = skip + "," + numPerPage;
     const catid = req.body.catid;
+    const list_cat = req.body.list_cat;
     const lang = req.query.lang;
     const queryAsync = Promise.promisify(con.query.bind(con));
     let where = "WHERE 1";
-    let language = "vi"
+    let language = "vi";
     if (catid) {
       where += ` and catid = ${catid}`;
+    }
+    if (list_cat) {
+      where += ` and catid IN (${list_cat})`;
     }
     if(lang){
         language = lang;
