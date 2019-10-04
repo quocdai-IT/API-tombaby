@@ -42,8 +42,6 @@ module.exports = async function(req, res) {
     if(lang){
         language = lang;
     }
-    console.log(language);
-
     const count = await queryAsync(
       `SELECT count(DISTINCT(same_group)) as numRows FROM mt_${language}_page_products ${where}`
     );
