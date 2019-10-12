@@ -83,7 +83,6 @@ module.exports = async function(req, res) {
     res.success(responsePayload);
   } catch (error) {
     console.log(error);
-
     res.serverError(error);
   }
 };
