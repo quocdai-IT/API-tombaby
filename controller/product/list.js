@@ -71,8 +71,9 @@ module.exports = async function(req, res) {
 			const module_num = await queryAsync(
 			  `SELECT num FROM mt_${language}_${module[ii].module_data}_products WHERE id = ${data[i].id}`
 			);
-			data[i].num += module_num[0].num;
+			num += module_num[0].num;
 		}
+		data[i].total_num = num;
 		data_sum_num[i]= data[i];
 	}
 	

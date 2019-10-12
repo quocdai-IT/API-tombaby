@@ -16,9 +16,9 @@ module.exports = function(req, res){
 		if(module_name){
 			module_name_default = module_name;
 		}
-		const module = await queryAsync(
-		  `SELECT * FROM mt_${language}_modules WHERE module_file = 'page' AND module_data != '${module_name_default}'`
-		);
+		//const module = await queryAsync(
+		  //`SELECT * FROM mt_${language}_modules WHERE module_file = 'page' AND module_data != '${module_name_default}'`
+		//);
 		let responsePayload = {
 		  results: module_name_default
 		};		
